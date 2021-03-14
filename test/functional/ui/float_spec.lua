@@ -2829,6 +2829,54 @@ describe('float window', function()
         end
       end)
 
+      it('with builtin popupmenu (pum_above)', function()
+        feed('i<cr><cr>x ')
+        funcs.complete(3, {'aa', 'word', 'longtext'})
+        if multigrid then
+          screen:expect{grid=[[
+          ## grid 1
+            [2:----------------------------------------]|
+            [2:----------------------------------------]|
+            [2:----------------------------------------]|
+            [2:----------------------------------------]|
+            [2:----------------------------------------]|
+            [2:----------------------------------------]|
+            [3:----------------------------------------]|
+          ## grid 2
+                                                    |
+            {0:~                                       }|
+            {0:~                                       }|
+            {0:~                                       }|
+            {0:~                                       }|
+            {0:~                                       }|
+          ## grid 3
+            {3:-- INSERT --}                            |
+          ## grid 4
+            {7:            }|
+            {7:            }|
+            {7:x aa^        }|
+            {12:~           }|
+          ## grid 5
+            {13: aa             }|
+            {1: word           }|
+            {1: longtext       }|
+          ]], float_pos={
+            [4] = {{id = 1001}, "NW", 1, 2, 5, true },
+            [5] = {{id = -1}, "SW", 4, 3, 1, false }, -- this is still incorrect, i expect here to be SW
+          }}
+        else
+          screen:expect([[
+                                                  |
+          {0:~     }{13: aa             }{0:                  }|
+          {0:~    }{7: }{1: word           }{0:                  }|
+          {0:~    }{7: }{1: longtext       }{0:                  }|
+          {0:~    }{7:x aa^        }{0:                       }|
+          {0:~    }{12:~           }{0:                       }|
+          {3:-- INSERT --}                            |
+          ]])
+        end
+      end)
+
       it('with ext_popupmenu', function()
         screen:set_option('ext_popupmenu', true)
         feed('ix ')
